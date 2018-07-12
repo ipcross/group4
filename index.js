@@ -1,9 +1,9 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 
-import Hello from './src/Hello';
+import Renderer from './src/Renderer';
 
 ReactDOM.render(
-    <Hello />,
+    <Renderer>Arithmetic Operations</Renderer>,
     document.getElementById('root')
 );
