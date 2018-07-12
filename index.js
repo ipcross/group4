@@ -1,9 +1,9 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 
-import Hello from './src/Hello';
+import CashVoucher from './src/CashVoucher';
 
 ReactDOM.render(
-    <Hello />,
+    <CashVoucher />,
     document.getElementById('root')
 );
