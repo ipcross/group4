@@ -1,43 +1,57 @@
-import React, { Component, Fragment } from 'react';
-import { withStyles } from '@material-ui/core/styles';
-import CssBaseline from '@material-ui/core/CssBaseline';
-import { Divider } from '@material-ui/core';
-import { Router } from 'react-router-dom';
+import React, { Component } from 'react';
 import { Provider } from 'react-redux';
+import { matchPath, Router } from 'react-router-dom';
+import { parse } from 'qs';
 
 import Layout from '~/src/components/Layout';
-import Header from '~/src/components/Header';
 import ModalSwitch from '~/src/helpers/routes/ModalSwitch';
-import history from '~/src/helpers/History';
+import Header from '~/src/components/Header';
+import history from '~/src/helpers/history';
+import routes from '~/src/helpers/routes';
 import store from '~/src/store';
+import prepareData from '~/src/helpers/prepareData';
 
 
-const styles = () => ({
-    divider: {
-        margin: '20px 0'
+history.listen((location) => {
+    const state = {
+        routes: [],
+        params: {},
+        query: {}
+    };
+
+    for (let route of routes) {
+        const match = matchPath(location.pathname, route);
+        if (match) {
+            const query = parse(location.search.substr(1));
+            state.routes.push(route);
+            Object.assign(state.params, match.params);
+            Object.assign(state.query, query);
+        }
     }
+
+    prepareData(store, state);
 });
 
 class App extends Component {
-    render() {
-        const { classes } = this.props;
+    componentDidMount() {
+        const jssStyles = document.getElementById('jss-server-side');
+        if (jssStyles && jssStyles.parentNode) {
+            jssStyles.parentNode.removeChild(jssStyles);
+        }
+    }
 
+    render() {
         return (
-            <CssBaseline>
-                <Layout>
-                    <Router history={history}>
-                        <Provider store={store}>
-                            <Fragment>
-                                <Header title="Pragmatic Book Store" />
-                                <Divider className={classes.divider} />
-                                <ModalSwitch />
-                            </Fragment>
-                        </Provider>
-                    </Router>
-                </Layout>
-            </CssBaseline>
+            <Provider store={store}>
+                <Router history={history}>
+                    <Layout>
+                        <Header title="Pragmatic Book Store" />
+                        <ModalSwitch />
+                    </Layout>
+                </Router>
+            </Provider>
         );
     }
 }
 
-export default withStyles(styles)(App);
+export default App;

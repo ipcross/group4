@@ -7,18 +7,27 @@ import {
 
 import middlewares from '~/src/middleware';
 import reducers from '~/src/reducers';
-import { initializeCart } from '~/src/actions/cart';
 
 
-const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
+let store;
 
-const store = createStore(
-    combineReducers(reducers),
-    composeEnhancers(
-        applyMiddleware(...middlewares)
-    )
-);
-
-store.dispatch(initializeCart());
+if (__SERVER__) {
+    store = createStore(
+        combineReducers(reducers),
+        compose(
+            applyMiddleware(...middlewares)
+        )
+    );
+} else {
+    const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
+    store = createStore(
+        combineReducers(reducers),
+        window.__INITIAL_STATE__,
+        composeEnhancers(
+            applyMiddleware(...middlewares)
+        )
+    );
+    delete window.__INITIAL_STATE__;
+}
 
 export default store;

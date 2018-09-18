@@ -1,12 +1,11 @@
 import 'typeface-roboto';
-import 'babel-polyfill';
 import React from 'react';
-import ReactDOM from 'react-dom';
+import { hydrate } from 'react-dom';
 
 import App from '~/src/components/App';
 
 
-ReactDOM.render(
+hydrate(
     <App />,
     document.getElementById('root')
 );
